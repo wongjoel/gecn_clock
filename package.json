@@ -1,0 +1,10 @@
+{
+  "name": "gecn-clock",
+  "version": "0.1.0",
+  "main": "resources/main.js",
+  "scripts": {"start": "electron ."},
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^9.2.0"
+  }
+}
