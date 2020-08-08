@@ -1,3 +1,4 @@
+node_modules/
 target/
 resources/public/js/
 resources/main.js

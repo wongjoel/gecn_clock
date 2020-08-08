@@ -1,0 +1,9 @@
+.logos img {
+  width: 100px;
+  margin-left: 5px;
+}
+
+.clock {
+    max-height: 20em;
+    background-color: lightgrey;
+}
