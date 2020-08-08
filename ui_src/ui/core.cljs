@@ -1,6 +1,8 @@
 (ns ui.core
   (:require [reagent.core :as reagent :refer [atom]]
-            [clojure.string :as string :refer [split-lines]]))
+            [clojure.string :as string :refer [split-lines]]
+            [tick.alpha.api :as t]
+            [tick.locale-en-us :as formatting-presets]))
 
 (def join-lines (partial string/join "\n"))
 
@@ -39,6 +41,7 @@
     [:p (str "Chromium " ((js->clj js/process.versions) "chrome"))]]
    [:p#main-clock.clock (.toLocaleTimeString (js/Date.) "en-AU")]
    [:p#sub-clock.clock "Hello world! 2"]
+   [:p#sub-clock2.clock (t/format (tick.format/formatter "hh:mm:ss a") (t/time))]
    [:button
     {:on-click #(swap! state inc)}
     (str "Clicked " @state " times")]
