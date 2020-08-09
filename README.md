@@ -9,7 +9,7 @@ npm install --save-dev electron # install electron binaries
 
 ### Emacs REPL
 ```shell
-lein cljsbuild once
+lein cljsbuild once #Compile cljs e.g. main.js
 ```
 
 <kbd>M-x cider-jack-in-cljs</kbd>
