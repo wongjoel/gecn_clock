@@ -21,7 +21,7 @@
 
 (defn start []
   (create-clock-window config/index-html)
-    (create-control-window config/test-html))
+  (create-control-window config/control-html))
 
 (.on app "window-all-closed"
      #(when-not (= js/process.platform "darwin")

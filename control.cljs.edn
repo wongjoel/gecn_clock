@@ -1,0 +1,5 @@
+^{:launch-node false}
+{:main wongjoel.control.control
+ :output-dir "cljs-temp"
+ :output-to "bin/control.js"
+ :target :nodejs}

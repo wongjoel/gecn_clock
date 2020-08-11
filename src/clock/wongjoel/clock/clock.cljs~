@@ -8,7 +8,6 @@
 
 (def join-lines (partial str/join "\n"))
 
-(defonce state        (r/atom 0))
 (defonce shell-result (r/atom ""))
 (defonce command      (r/atom ""))
 
@@ -78,7 +77,6 @@
    [:section.clock
    [:h1 "Countdown"]
    [countdown-timer timer countdown-end enable-countdown]]
-   
    [:button
     {:on-click #(reset! countdown-end (t/+ (t/instant) (t/new-duration 15 :minutes)))}
     "Reset countdown timer"]

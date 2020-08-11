@@ -1,5 +1,8 @@
 node_modules/
 target/
+bin/
+cljs-temp/
+.cpcache/
 *-init.clj
 figwheel_server.log
 .nrepl-port
