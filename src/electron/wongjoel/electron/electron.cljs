@@ -23,7 +23,7 @@
       (.once "ready-to-show" #(.show win)))))
 
 (defn start []
-  (let [clock (create-clock-window config/index-html)
+  (let [clock (create-clock-window config/clock-html)
         control (create-control-window config/control-html)]
     (reset! clock-window clock)
     (reset! control-window control)

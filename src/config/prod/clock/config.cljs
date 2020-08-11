@@ -1,4 +1,4 @@
 (ns clock.config)
 
-(def index-html "resources/clock.html")
-(def index-html "resources/control.html")
+(def clock-html "resources/clock.html")
+(def control-html "resources/control.html")
