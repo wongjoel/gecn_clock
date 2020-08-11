@@ -23,8 +23,21 @@
       (.once "ready-to-show" #(.show win)))))
 
 (defn start []
-  (reset! clock-window (create-clock-window config/index-html))
-  (reset! control-window (create-control-window config/control-html)))
+  (let [clock (create-clock-window config/index-html)
+        control (create-control-window config/control-html)]
+    (reset! clock-window clock)
+    (reset! control-window control)
+    (.on clock "closed"
+         (fn [] (do
+                  (println "Clock Window closed")
+                  (reset! clock-window nil)
+                  (when @control-window (.close @control-window)))))
+    (.on control "closed"
+         (fn [] (do
+                  (println "Control Window closed")
+                  (reset! control-window nil)
+                  (when @clock-window (.close @clock-window)))))))
+
 
 (.on ipcMain "async-message"
      (fn [event arg] (do
