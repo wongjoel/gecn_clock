@@ -39,10 +39,12 @@
                   (when @clock-window (.close @clock-window)))))))
 
 
-(.on ipcMain "async-message"
-     (fn [event arg] (do
-                       (println "message received")
-                       (.send (.-webContents @clock-window) "async-reply" "pong"))))
+(.on ipcMain "control-countdown-enable"
+     (fn [event arg]
+       (println (str "Main received " arg))
+       (.send
+        (.-webContents @clock-window)
+        "clock-countdown-enable" arg)))
 
 (.on app "window-all-closed"
      #(when-not (= js/process.platform "darwin")

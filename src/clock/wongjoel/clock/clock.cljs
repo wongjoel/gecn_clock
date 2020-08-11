@@ -6,25 +6,34 @@
             [tick.alpha.api :as t]
             [tick.locale-en-us]))
 
-
-(defonce timer (r/atom (t/time)))
-(defonce time-updater (js/setInterval #(reset! timer (t/time)) 1000))
-
-(defonce countdown-end (r/atom (t/+ (t/instant) (t/new-duration 15 :minutes))))
-(defonce countdown-display (r/atom true))
-(defonce countdown-enable (r/atom false))
-
-(defonce proc (js/require "child_process"))
 (defonce ipcRenderer (.-ipcRenderer (js/require "electron")))
 
-(defonce ping-pong (r/atom "ping"))
-(.on ipcRenderer "async-reply" (fn [event arg] (do
-                                                 (reset! ping-pong "pong")
-                                                 (println "Recieved Message"))))
+(defonce timer (r/atom (t/time)))
+(defonce time-updater (js/setInterval #(reset! timer (t/time)) 500))
+
+(defonce countdown-minutes (r/atom 15))
+(defonce countdown-end (r/atom (t/+ (t/instant) (t/new-duration @countdown-minutes :minutes))))
+(defonce countdown-display (r/atom true))
+
+(defonce countdown-enable (r/atom false))
 
 (defn set-countdown-end
   [minutes]
-  (reset! countdown-end (r/atom (t/+ (t/instant) (t/new-duration minutes :minutes)))))
+  (reset! countdown-end (t/+ (t/instant) (t/new-duration @minutes :minutes))))
+
+(defn reset-countdown
+  [minutes enable]
+  (set-countdown-end minutes)
+  (reset! enable true))
+
+(.on ipcRenderer "clock-countdown-enable"
+     (fn [event arg]
+       (println (str "Clock received " arg))
+       (case arg
+         "stop" (reset! countdown-enable false)
+         "start" (reset-countdown countdown-minutes countdown-enable)
+         :default (js/alert "Error handling clock-countdown-enable")
+         )))
 
 (defn clock
   [timer]
