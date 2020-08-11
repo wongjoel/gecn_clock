@@ -35,6 +35,11 @@
          :default (js/alert "Error handling clock-countdown-enable")
          )))
 
+(.on ipcRenderer "clock-countdown-minutes"
+     (fn [event arg]
+       (println (str "Clock received " arg))
+       (reset! countdown-minutes arg)))
+
 (defn clock
   [timer]
   (let [time-str (t/format (tick.format/formatter "hh:mm:ss a") @timer)]
@@ -43,7 +48,7 @@
      [:div.clock time-str]]))
 
 (defn countdown-mm-ss
-  [now end-time]
+  [now end-time enable]
   (let [duration (t/duration
                   {:tick/beginning now
                    :tick/end end-time})
@@ -51,7 +56,10 @@
         seconds (t/seconds (t/- duration (t/new-duration minutes :minutes)))]
     (if (t/< (t/instant) end-time)
       (pprint/cl-format nil "~2,'0d:~2,'0d" minutes seconds)
-      "Time's up!")))
+      (do
+        (.send ipcRenderer "clock-countdown-finished" "finished")
+        (reset! enable false)
+        "Time's up!"))))
 
 (defn countdown-timer
   [timer end-time display enable]
@@ -62,7 +70,8 @@
       (if @enable
         (countdown-mm-ss
          (t/instant (-> @timer (t/on (t/date))  (t/in (t/zone))))
-         @end-time)
+         @end-time
+         enable)
         "-")]]
     [:section.hidden ""]))
 

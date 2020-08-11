@@ -38,13 +38,26 @@
                   (reset! control-window nil)
                   (when @clock-window (.close @clock-window)))))))
 
-
 (.on ipcMain "control-countdown-enable"
      (fn [event arg]
        (println (str "Main received " arg))
        (.send
         (.-webContents @clock-window)
         "clock-countdown-enable" arg)))
+
+(.on ipcMain "control-countdown-minutes"
+     (fn [event arg]
+       (println (str "Main received " arg))
+       (.send
+        (.-webContents @clock-window)
+        "clock-countdown-minutes" arg)))
+
+(.on ipcMain "clock-countdown-finished"
+     (fn [event arg]
+       (println (str "Main received " arg))
+       (.send
+        (.-webContents @control-window)
+        "control-countdown-finished" arg)))
 
 (.on app "window-all-closed"
      #(when-not (= js/process.platform "darwin")

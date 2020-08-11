@@ -33,14 +33,24 @@
     {:type :number
      :on-change (fn [^js/Event e]
                   (println "changed")
-                  (reset! minutes (.-value (.-target e))))
-     :size 3
+                  (reset! minutes (.-value (.-target e)))
+                  (.send ipcRenderer "control-countdown-minutes" @minutes))
+     :min -1
+     :max 1000
      :value @minutes}]])
 
 (defonce alarm-sound (r/atom "alarms/Timer.ogg"))
 (defonce alarm-enable (r/atom false))
 (defonce alarm-repeats (r/atom 5))
 (defonce alarm-count (r/atom 0))
+(.on ipcRenderer "control-countdown-finished"
+     (fn [event arg]
+       (println (str "Control received " arg))
+       (case arg
+         "finished" (do (reset! alarm-count 0) (reset! alarm-enable true) (reset! countdown-enable false))
+         :default (js/alert "Error handling control-countdown-finished")
+         )))
+
 (defn alarm-sound-element
   [sound enable repeats count]
   (if @enable
@@ -78,7 +88,8 @@
      :on-change (fn [^js/Event e]
                   (println "changed")
                   (reset! repeats (.-value (.-target e))))
-     :size 3
+     :min 0
+     :max 1000
      :value @repeats}]])
 
 (defn root-component []
