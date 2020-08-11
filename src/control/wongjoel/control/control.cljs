@@ -20,9 +20,6 @@
 
 (defonce proc (js/require "child_process"))
 (defonce ipcRenderer (.-ipcRenderer (js/require "electron")))
-(defonce ping-pong (r/atom "ping"))
-
-(.on ipcRenderer "async-reply" (fn [event arg] (reset! ping-pong "pong")))
 
 (defn append-to-out [out]
   (swap! shell-result str out))
@@ -65,10 +62,6 @@
 
 ;(countdown-mm-ss (t/instant) (t/+ (t/instant) (t/new-duration 71 :minutes)))
 
-(defn ping-ping-comp
-[]
-[:p (str @ping-pong)])
-
 (defn root-component []
   [:div
   [:section.clock
@@ -87,9 +80,11 @@
     {:on-click #(reset! enable-countdown true)}
     "Start countdown timer"]
    [:button
-    {:on-click #(.send ipcRenderer "async-message" "ping")}
+    {:on-click #(do
+                  (.send ipcRenderer "async-message" "ping")
+                  (println "sent ping")
+                  )}
     "Ping"]
-    [ping-ping-comp]
    [:p
     [:form
      {:on-submit (fn [^js/Event e]

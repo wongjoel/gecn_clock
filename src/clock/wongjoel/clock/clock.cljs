@@ -22,7 +22,9 @@
 (defonce ipcRenderer (.-ipcRenderer (js/require "electron")))
 (defonce ping-pong (r/atom "ping"))
 
-(.on ipcRenderer "async-reply" (fn [event arg] (reset! ping-pong "pong")))
+(.on ipcRenderer "async-reply" (fn [event arg] (do
+                                                 (reset! ping-pong "pong")
+                                                 (println "Recieved Message"))))
 
 (defn append-to-out [out]
   (swap! shell-result str out))
@@ -86,10 +88,10 @@
    [:button
     {:on-click #(reset! enable-countdown true)}
     "Start countdown timer"]
+   [ping-ping-comp]
    [:button
-    {:on-click #(.send ipcRenderer "async-message" "ping")}
-    "Ping"]
-    [ping-ping-comp]
+    {:on-click #(println (str @ping-pong))}
+    "test"]
    [:p
     [:form
      {:on-submit (fn [^js/Event e]
