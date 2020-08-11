@@ -6,45 +6,32 @@
             [tick.alpha.api :as t]
             [tick.locale-en-us]))
 
-(def join-lines (partial str/join "\n"))
-
-(defonce shell-result (r/atom ""))
-(defonce command      (r/atom ""))
 
 (defonce timer (r/atom (t/time)))
-(defonce time-updater (js/setInterval
-                       #(reset! timer (t/time)) 1000))
+(defonce time-updater (js/setInterval #(reset! timer (t/time)) 1000))
 
 (defonce countdown-end (r/atom (t/+ (t/instant) (t/new-duration 15 :minutes))))
-(defonce enable-countdown (r/atom true))
+(defonce countdown-display (r/atom true))
+(defonce countdown-enable (r/atom false))
 
 (defonce proc (js/require "child_process"))
 (defonce ipcRenderer (.-ipcRenderer (js/require "electron")))
-(defonce ping-pong (r/atom "ping"))
 
+(defonce ping-pong (r/atom "ping"))
 (.on ipcRenderer "async-reply" (fn [event arg] (do
                                                  (reset! ping-pong "pong")
                                                  (println "Recieved Message"))))
 
-(defn append-to-out [out]
-  (swap! shell-result str out))
+(defn set-countdown-end
+  [minutes]
+  (reset! countdown-end (r/atom (t/+ (t/instant) (t/new-duration minutes :minutes)))))
 
-(defn run-process []
-  (when-not (empty? @command)
-    (println "Running command" @command)
-    (let [[cmd & args] (str/split @command #"\s")
-          js-args (clj->js (or args []))
-          p (.spawn proc cmd js-args)]
-      (.on p "error" (comp append-to-out
-                           #(str % "\n")))
-      (.on (.-stderr p) "data" append-to-out)
-      (.on (.-stdout p) "data" append-to-out))
-    (reset! command "")))
-
-(defn clock [timer]
+(defn clock
+  [timer]
   (let [time-str (t/format (tick.format/formatter "hh:mm:ss a") @timer)]
-    [:div
-     time-str]))
+    [:section
+     [:h1 "Time"]
+     [:div.clock time-str]]))
 
 (defn countdown-mm-ss
   [now end-time]
@@ -58,53 +45,21 @@
       "Time's up!")))
 
 (defn countdown-timer
-  [timer end-time enable-countdown]
-  [:div.clock (if @enable-countdown
-                (countdown-mm-ss
-                 (t/instant (-> @timer (t/on (t/date))  (t/in (t/zone))))
-                 @end-time)
-                "Stopped")])
-
-;(countdown-mm-ss (t/instant) (t/+ (t/instant) (t/new-duration 71 :minutes)))
-
-(defn ping-ping-comp
-[]
-[:p (str @ping-pong)])
+  [timer end-time display enable]
+  (if @display
+    [:section
+     [:h1 "Countdown Timer"]
+     (if @enable
+       (countdown-mm-ss
+        (t/instant (-> @timer (t/on (t/date))  (t/in (t/zone))))
+        @end-time)
+       "Stopped")]
+    [:section.hidden ""]))
 
 (defn root-component []
   [:div
-  [:section.clock
-  [:h1 "Time"]
-  [clock timer]]
-   [:section.clock
-   [:h1 "Countdown"]
-   [countdown-timer timer countdown-end enable-countdown]]
-   [:button
-    {:on-click #(reset! countdown-end (t/+ (t/instant) (t/new-duration 15 :minutes)))}
-    "Reset countdown timer"]
-   [:button
-    {:on-click #(reset! enable-countdown false)}
-    "Stop countdown timer"]
-   [:button
-    {:on-click #(reset! enable-countdown true)}
-    "Start countdown timer"]
-   [ping-ping-comp]
-   [:button
-    {:on-click #(println (str @ping-pong))}
-    "test"]
-   [:p
-    [:form
-     {:on-submit (fn [^js/Event e]
-                   (.preventDefault e)
-                   (run-process))}
-     [:input#command
-      {:type :text
-       :on-change (fn [^js/Event e]
-                    (reset! command
-                            ^js/String (.-value (.-target e))))
-       :value @command
-       :placeholder "type in shell command"}]]]
-   [:pre (join-lines (take 100 (reverse (str/split-lines @shell-result))))]])
+   [clock timer]
+   [countdown-timer timer countdown-end countdown-display countdown-enable]])
 
 (defn start []
   (rdom/render [root-component]
