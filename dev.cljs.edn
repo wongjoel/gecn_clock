@@ -1,6 +1,7 @@
 ^{:launch-js ["npm" "start"] ;; For Windows, change this to ["npm.cmd" "start"]
                              ;; Suggestions gratefully received for a way to make this automatic
   :watch-dirs ["src/config/dev" "src/electron" "src/clock" "src/control"]
+  :css-dirs ["resources/css"]
   :extra-main-files {:clock {:main wongjoel.clock.clock :output-to "bin/clock.js"}
                      :control {:main wongjoel.control.control :output-to "bin/control.js"}}}
 {:main wongjoel.electron.electron

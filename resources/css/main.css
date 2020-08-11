@@ -1,0 +1,19 @@
+* {
+    background-color: grey;
+    color: whitesmoke;
+    font-family: sans-serif;
+}
+
+.clock {
+    background-color: black;
+    font-size: 17vw;
+    text-align: center;
+}
+
+.clock-label {
+    font-size: 5vw;
+}
+
+.control-button {
+    max-height: 20em;
+}

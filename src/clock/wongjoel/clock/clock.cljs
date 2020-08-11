@@ -30,7 +30,7 @@
   [timer]
   (let [time-str (t/format (tick.format/formatter "hh:mm:ss a") @timer)]
     [:section
-     [:h1 "Time"]
+     [:div.clock-label "Time:"]
      [:div.clock time-str]]))
 
 (defn countdown-mm-ss
@@ -48,12 +48,13 @@
   [timer end-time display enable]
   (if @display
     [:section
-     [:h1 "Countdown Timer"]
-     (if @enable
-       (countdown-mm-ss
-        (t/instant (-> @timer (t/on (t/date))  (t/in (t/zone))))
-        @end-time)
-       "Stopped")]
+     [:div.clock-label "Countdown Timer:"]
+     [:div.clock
+      (if @enable
+        (countdown-mm-ss
+         (t/instant (-> @timer (t/on (t/date))  (t/in (t/zone))))
+         @end-time)
+        "-")]]
     [:section.hidden ""]))
 
 (defn root-component []
