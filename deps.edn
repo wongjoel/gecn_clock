@@ -1,0 +1,23 @@
+{:deps {org.clojure/clojure {:mvn/version "1.10.1"}
+        org.clojure/clojurescript {:mvn/version "1.10.773"}
+        com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}
+        com.bhauman/figwheel-main {:mvn/version "0.2.11"}
+        reagent {:mvn/version "0.10.0"}
+        tick {:mvn/version "0.4.26-alpha"}}
+ :paths []
+ :aliases {:electron {:extra-paths ["src/main" "src/config/prod"]
+                  :main-opts ["--main" "figwheel.main"
+                              "--optimizations" "simple"
+                              "--build-once" "electron"]}
+           :clock {:extra-paths ["src/renderer"]
+                      :main-opts ["--main" "figwheel.main"
+                                  "--optimizations" "simple"
+                                  "--build-once" "clock"]}
+           :dev {:extra-paths ["src/main" "src/renderer" "src/config/dev" "src/test"]
+                 :main-opts ["--main" "figwheel.main"
+                             "--build" "dev"
+                             "--repl"]}
+           :test {:extra-paths ["src/main" "src/renderer" "src/config/dev" "src/test"]
+                  :main-opts ["--main" "figwheel.main"
+                              "--compile-opts" "test.cljs.edn"
+                              "--main" "clock.test.runner-cmdline"]}}}

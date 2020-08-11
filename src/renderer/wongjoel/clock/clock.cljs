@@ -1,13 +1,12 @@
-(ns ui.core
+(ns wongjoel.clock.clock
   (:require [reagent.core :as r]
-            [clojure.string :as str]
+  [reagent.dom :as rdom]
+  [clojure.string :as str]
             [cljs.pprint :as pprint]
             [tick.alpha.api :as t]
             [tick.locale-en-us]))
 
 (def join-lines (partial str/join "\n"))
-
-(enable-console-print!)
 
 (defonce state        (r/atom 0))
 (defonce shell-result (r/atom ""))
@@ -43,7 +42,7 @@
 
 (defn clock [timer]
   (let [time-str (t/format (tick.format/formatter "hh:mm:ss a") @timer)]
-    [:div.clock
+    [:div
      time-str]))
 
 (defn countdown-mm-ss
@@ -67,21 +66,19 @@
 
 ;(countdown-mm-ss (t/instant) (t/+ (t/instant) (t/new-duration 71 :minutes)))
 
+(defn ping-ping-comp
+[]
+[:p (str @ping-pong)])
+
 (defn root-component []
   [:div
-   [:div.logos
-    [:img.electron {:src "img/electron-logo.png"}]
-    [:img.cljs {:src "img/cljs-logo.svg"}]
-    [:img.reagent {:src "img/reagent-logo.png"}]]
-   [:pre "Versions:"
-    [:p (str "Node     " js/process.version)]
-    [:p (str "Electron " ((js->clj js/process.versions) "electron"))]
-    [:p (str "Chromium " ((js->clj js/process.versions) "chrome"))]]
-   [:p.clock (.toLocaleTimeString (js/Date.) "en-AU")]
-   [:p.clock "Hello world! 2"]
-   [:p.clock (t/format (tick.format/formatter "hh:mm:ss a") (t/time))]
-   [clock timer]
-   [countdown-timer timer countdown-end enable-countdown]
+  [:section.clock
+  [:h1 "Time"]
+  [clock timer]]
+   [:section.clock
+   [:h1 "Countdown"]
+   [countdown-timer timer countdown-end enable-countdown]]
+   
    [:button
     {:on-click #(reset! countdown-end (t/+ (t/instant) (t/new-duration 15 :minutes)))}
     "Reset countdown timer"]
@@ -94,6 +91,7 @@
    [:button
     {:on-click #(.send ipcRenderer "async-message" "ping")}
     "Ping"]
+    [ping-ping-comp]
    [:p
     [:form
      {:on-submit (fn [^js/Event e]
@@ -108,6 +106,8 @@
        :placeholder "type in shell command"}]]]
    [:pre (join-lines (take 100 (reverse (str/split-lines @shell-result))))]])
 
-(r/render
-  [root-component]
-  (js/document.getElementById "app-container"))
+(defn start []
+  (rdom/render [root-component]
+            (js/document.getElementById "app")))
+
+(start)

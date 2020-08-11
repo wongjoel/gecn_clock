@@ -1,9 +1,10 @@
 {
   "name": "gecn-clock",
   "version": "0.1.0",
-  "main": "resources/main.js",
+  "main": "bin/electron.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . --out executables --ignore '.*\\.edn' --ignore '.cpcache' --ignore '.gitignore' --ignore 'readme.md' --ignore 'src' --ignore 'cljs-temp' --ignore 'resources/index-dev.html' --ignore 'resources/test.html'"
   },
   "dependencies": {},
   "devDependencies": {

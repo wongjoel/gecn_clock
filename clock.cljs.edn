@@ -1,0 +1,5 @@
+^{:launch-node false}
+{:main wongjoel.clock.clock
+ :output-dir "cljs-temp"
+ :output-to "bin/clock.js"
+ :target :nodejs}

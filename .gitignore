@@ -1,7 +1,5 @@
 node_modules/
 target/
-resources/public/js/
-resources/main.js
 *-init.clj
 figwheel_server.log
 .nrepl-port

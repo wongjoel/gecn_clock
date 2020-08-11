@@ -1,0 +1,5 @@
+^{:launch-node false}
+{:main wongjoel.electron.electron
+ :output-dir "cljs-temp"
+ :output-to "bin/electron.js"
+ :target :nodejs}
