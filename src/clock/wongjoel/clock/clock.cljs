@@ -9,7 +9,7 @@
 (defonce ipcRenderer (.-ipcRenderer (js/require "electron")))
 
 (defonce timer (r/atom (t/time)))
-(defonce time-updater (js/setInterval #(reset! timer (t/time)) 500))
+(defonce time-updater (js/setInterval #(reset! timer (t/time)) 1000))
 
 (defonce countdown-minutes (r/atom 15))
 (defonce countdown-end (r/atom (t/+ (t/instant) (t/new-duration @countdown-minutes :minutes))))

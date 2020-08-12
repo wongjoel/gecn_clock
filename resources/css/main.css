@@ -1,5 +1,5 @@
 * {
-    background-color: grey;
+    background-color: gray;
     color: whitesmoke;
     font-family: sans-serif;
 }
@@ -40,4 +40,9 @@
 .number-input {
     font-size: 1em;
     width: 3em;
+}
+
+.checkbox {
+    width: 2em;
+    height: 2em;
 }

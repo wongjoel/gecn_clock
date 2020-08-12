@@ -39,6 +39,20 @@
      :max 1000
      :value @minutes}]])
 
+(defonce countdown-repeat (r/atom true))
+(defn countdown-repeat-form
+  [repeat]
+  [:form.control {:on-submit (fn [^js/Event e]
+                       (.preventDefault e)
+                       (println "submitted"))}
+   [:label {:for "repeat"} "Countdown repeats: "]
+   [:input#repeat.checkbox
+    {:type :checkbox
+     :on-change (fn [^js/Event e]
+                  (println "repeat changed")
+                  (swap! repeat not))
+     :checked @repeat}]])
+
 (defonce alarm-sound (r/atom "alarms/Timer.ogg"))
 (defonce alarm-enable (r/atom false))
 (defonce alarm-repeats (r/atom 5))
@@ -47,9 +61,19 @@
      (fn [event arg]
        (println (str "Control received " arg))
        (case arg
-         "finished" (do (reset! alarm-count 0) (reset! alarm-enable true) (reset! countdown-enable false))
+         "finished" (do
+                      (reset! alarm-count 0)
+                      (reset! alarm-enable true)
+                      (if @countdown-repeat
+                        (.send ipcRenderer "control-countdown-enable" "start")
+                        (reset! countdown-enable false)))
          :default (js/alert "Error handling control-countdown-finished")
          )))
+
+(.on ipcRenderer "control-open-file-result"
+     (fn [event arg]
+       (println (str "Control received " arg))
+       (reset! alarm-sound arg)))
 
 (defn alarm-sound-element
   [sound enable repeats count]
@@ -62,10 +86,9 @@
                         (if (<= @count @repeats)
                           (js/setTimeout #(reset! enable true) 10)
                           (reset! count 0)))
-             :autoPlay true} ;can't work out how else to send the play event
-     [:source {:src @sound :type "audio/ogg"}]]
-    [:div ""]
-    ))
+             :src @sound
+             :autoPlay true}] ;can't work out how else to send the play event
+    [:div ""]))
 
 (defn alarm-test-button
   [enable]
@@ -92,13 +115,28 @@
      :max 1000
      :value @repeats}]])
 
+(defn alarm-display-sound
+  [sound]
+  [:details.control
+   [:summary "Selected sound"]
+   [:pre @sound]])
+
+(defn alarm-select-sound
+  []
+  [:button.control.button
+   {:on-click (fn [] (.send ipcRenderer "control-open-file-request" ""))}
+   "Select Sound"])
+
 (defn root-component []
   [:div
    [toggle-countdown-enable-button countdown-enable]
    [countdown-minutes-form countdown-minutes]
+   [countdown-repeat-form countdown-repeat]
    [alarm-sound-element alarm-sound alarm-enable alarm-repeats alarm-count]
    [alarm-test-button alarm-enable]
    [alarm-minutes-form alarm-repeats]
+   [alarm-select-sound]
+   [alarm-display-sound alarm-sound]
    ])
 
 (defn start []

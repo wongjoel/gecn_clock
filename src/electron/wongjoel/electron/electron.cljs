@@ -5,6 +5,7 @@
 (def BrowserWindow (.-BrowserWindow Electron))
 (def app (.-app Electron))
 (def ipcMain (.-ipcMain Electron))
+(def dialog (.-dialog Electron))
 (defonce clock-window (atom nil))
 (defonce control-window (atom nil))
 
@@ -58,6 +59,20 @@
        (.send
         (.-webContents @control-window)
         "control-countdown-finished" arg)))
+
+(.on ipcMain "control-open-file-request"
+     (fn [event arg]
+       (println (str "Main received " arg))
+       (-> dialog
+           (.showOpenDialog
+            @control-window
+            (clj->js {:properties ["openFile"]}))
+           (.then (fn [result]
+                    (when-not (.-canceled result)
+                      (.send
+                       (.-webContents @control-window)
+                       "control-open-file-result" (.-filePaths result)))))
+           (.catch (fn [err] (println (str "Error " err)))))))
 
 (.on app "window-all-closed"
      #(when-not (= js/process.platform "darwin")
