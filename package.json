@@ -4,7 +4,7 @@
   "main": "bin/electron.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-packager . --out executables --ignore '.*\\.edn' --ignore '.cpcache' --ignore '.gitignore' --ignore 'readme.md' --ignore 'src' --ignore 'cljs-temp' --ignore 'resources/index-dev.html' --ignore 'resources/test.html'"
+    "package": "electron-packager . --out executables --ignore '.*\\.edn' --ignore '.cpcache' --ignore '.gitignore' --ignore 'readme.md' --ignore 'src' --ignore 'cljs-temp' --ignore 'clean.sh' --ignore 'build.sh'"
   },
   "dependencies": {},
   "devDependencies": {
