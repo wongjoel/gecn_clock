@@ -42,7 +42,7 @@
 
 (defn clock
   [timer]
-  (let [time-str (t/format (tick.format/formatter "hh:mm:ss a") @timer)]
+  (let [time-str (t/format (tick.format/formatter "hh:mm a") @timer)]
     [:section
      [:div.clock-label "Time:"]
      [:div.clock time-str]]))
