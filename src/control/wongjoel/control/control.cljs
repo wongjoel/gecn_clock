@@ -78,11 +78,11 @@
      "Test Alarm"]))
 
 (defn alarm-minutes-form
-  [count repeats]
+  [repeats]
   [:form.control {:on-submit (fn [^js/Event e]
                        (.preventDefault e)
                        (println "submitted"))}
-   [:label {:for "repeats"} (str "Repetition " @count " out of ")]
+   [:label {:for "repeats"} "Alarm duration: "]
    [:input#repeats.number-input
     {:type :number
      :on-change (fn [^js/Event e]
@@ -98,7 +98,7 @@
    [countdown-minutes-form countdown-minutes]
    [alarm-sound-element alarm-sound alarm-enable alarm-repeats alarm-count]
    [alarm-test-button alarm-enable]
-   [alarm-minutes-form alarm-count alarm-repeats]
+   [alarm-minutes-form alarm-repeats]
    ])
 
 (defn start []
