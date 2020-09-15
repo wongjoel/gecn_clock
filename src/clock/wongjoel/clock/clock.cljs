@@ -15,7 +15,7 @@
 (defonce countdown-end (r/atom (t/+ (t/instant) (t/new-duration @countdown-minutes :minutes))))
 (defonce countdown-display (r/atom true))
 
-(defonce countdown-enable (r/atom false))
+(defonce countdown-enable (r/atom true))
 
 (defn set-countdown-end
   [minutes]

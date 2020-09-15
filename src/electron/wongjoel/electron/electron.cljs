@@ -12,6 +12,7 @@
 (defn create-clock-window [index]
   (let [win (BrowserWindow. (clj->js {:x 10 :y 10 :webPreferences {:nodeIntegration true}
                                       :show false}))]
+    (set! (. win -autoHideMenuBar) true)
     (doto win
       (.loadFile index)
       (.once "ready-to-show" #(.show win)))))

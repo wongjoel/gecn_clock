@@ -8,10 +8,11 @@
     background-color: black;
     font-size: 17vw;
     text-align: center;
+    margin: 0vw 1vw 0vw 1vw;
 }
 
 .clock-label {
-    font-size: 5vw;
+    font-size: 5.5vw;
 }
 
 .control {

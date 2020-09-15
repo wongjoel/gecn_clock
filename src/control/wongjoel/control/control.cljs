@@ -7,7 +7,7 @@
 
 (defonce ipcRenderer (.-ipcRenderer (js/require "electron")))
 
-(defonce countdown-enable (r/atom false))
+(defonce countdown-enable (r/atom true))
 (defn toggle-countdown-enable-button
   [enable]
   (if @enable
@@ -55,7 +55,7 @@
 
 (defonce alarm-sound (r/atom "alarms/Timer.ogg"))
 (defonce alarm-enable (r/atom false))
-(defonce alarm-repeats (r/atom 5))
+(defonce alarm-repeats (r/atom 4))
 (defonce alarm-count (r/atom 0))
 (.on ipcRenderer "control-countdown-finished"
      (fn [event arg]
