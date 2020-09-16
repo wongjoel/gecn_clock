@@ -5,16 +5,25 @@ Simple dual window clock app with countdown timer and selectable alarm sound. On
 ## Building
 
 Install Node dependencies:
+```
+npm install
+```
 
-    npm install
+### Developmen
 
-### Development
-
-    clojure -A:dev
-
+```
+clojure -A:dev
+```
 ### Release
 
-    clojure -A:electron
-    clojure -A:clock
-    clojure -A:control
-    npm run package
+```
+clojure -A:electron
+clojure -A:clock
+clojure -A:control
+npm run package
+```
+or just
+```
+clean.sh
+build.sh
+```
